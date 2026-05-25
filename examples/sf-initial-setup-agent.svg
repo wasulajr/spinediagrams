@@ -1,0 +1,170 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" style="font-family:ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#ffffff;">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1600" height="48" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="800" y="18" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">sf-initial-setup-agent</text>
+  <text x="800" y="36" text-anchor="middle" font-size="12" fill="#64748b">local runtime (v0.3.x, macOS, loopback-only; happy path never spends an Anthropic key)</text>
+  <rect x="12" y="54" width="518" height="148" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/>
+  <clipPath id="clip_browser"><rect x="12" y="54" width="518" height="26" rx="8"/></clipPath>
+  <rect x="12" y="54" width="518" height="26" fill="#ccfbf1" clip-path="url(#clip_browser)"/>
+  <line x1="12" y1="80" x2="530" y2="80" stroke="#0d9488" stroke-width="0.8" opacity="0.5"/>
+  <text x="271" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0d9488">Browser (default; 127.0.0.1 loopback)</text>
+  <rect x="20" y="87" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="271" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Wizard page (/)</text>
+  <rect x="20" y="115" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="271" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Dashboard + live progress</text>
+  <rect x="20" y="143" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="271" y="159" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Summary (/summary)</text>
+  <rect x="20" y="171" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="271" y="187" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">WebSocket client</text>
+  <rect x="540" y="54" width="254" height="92" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_entry"><rect x="540" y="54" width="254" height="26" rx="8"/></clipPath>
+  <rect x="540" y="54" width="254" height="26" fill="#e2e8f0" clip-path="url(#clip_entry)"/>
+  <line x1="540" y1="80" x2="794" y2="80" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="667" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Python entry (orchestrator + prereqs)</text>
+  <rect x="548" y="87" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="667" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">sf_initial_setup_agent.py</text>
+  <rect x="548" y="115" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="667" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">prereqs.py (stdlib-only)</text>
+  <rect x="804" y="54" width="518" height="148" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <clipPath id="clip_fastapi"><rect x="804" y="54" width="518" height="26" rx="8"/></clipPath>
+  <rect x="804" y="54" width="518" height="26" fill="#bbf7d0" clip-path="url(#clip_fastapi)"/>
+  <line x1="804" y1="80" x2="1322" y2="80" stroke="#16a34a" stroke-width="0.8" opacity="0.5"/>
+  <text x="1063" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#16a34a">FastAPI / uvicorn (local web server)</text>
+  <rect x="812" y="87" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="1063" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">uvicorn ASGI (127.0.0.1)</text>
+  <rect x="812" y="115" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="1063" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">web_ui.py (FastAPI)</text>
+  <rect x="812" y="143" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="1063" y="159" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Jinja2 templates</text>
+  <rect x="812" y="171" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="1063" y="187" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">WebSocket endpoint</text>
+  <rect x="1332" y="54" width="254" height="148" rx="8" fill="#f0f9ff" stroke="#0369a1" stroke-width="1.5"/>
+  <clipPath id="clip_fs"><rect x="1332" y="54" width="254" height="26" rx="8"/></clipPath>
+  <rect x="1332" y="54" width="254" height="26" fill="#e0f2fe" clip-path="url(#clip_fs)"/>
+  <line x1="1332" y1="80" x2="1586" y2="80" stroke="#0369a1" stroke-width="0.8" opacity="0.5"/>
+  <text x="1459" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0369a1">Local filesystem state</text>
+  <rect x="1340" y="87" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="1459" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">~/.digadop-agents-env</text>
+  <rect x="1340" y="115" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="1459" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">~/.sf-…-config.json</text>
+  <rect x="1340" y="143" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="1459" y="159" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">&lt;proj&gt;/manifest/</text>
+  <rect x="1340" y="171" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="1459" y="187" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">&lt;proj&gt;/.5gl-sync-state</text>
+  <rect x="12" y="728" width="254" height="120" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <clipPath id="clip_retrieve"><rect x="12" y="728" width="254" height="26" rx="8"/></clipPath>
+  <rect x="12" y="728" width="254" height="26" fill="#bfdbfe" clip-path="url(#clip_retrieve)"/>
+  <line x1="12" y1="754" x2="266" y2="754" stroke="#2563eb" stroke-width="0.8" opacity="0.5"/>
+  <text x="139" y="747" text-anchor="middle" font-size="12" font-weight="600" fill="#2563eb">Retrieve worker (subprocess; CI-runnable)</text>
+  <rect x="20" y="761" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="139" y="777" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">retrieve_metadata.py</text>
+  <rect x="20" y="789" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="139" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">ThreadPoolExecutor × 6</text>
+  <rect x="20" y="817" width="238" height="24" rx="5" fill="#15803D"/>
+  <text x="139" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">JSON-line stderr events</text>
+  <rect x="276" y="728" width="254" height="120" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+  <clipPath id="clip_trouble"><rect x="276" y="728" width="254" height="26" rx="8"/></clipPath>
+  <rect x="276" y="728" width="254" height="26" fill="#fde68a" clip-path="url(#clip_trouble)"/>
+  <line x1="276" y1="754" x2="530" y2="754" stroke="#b45309" stroke-width="0.8" opacity="0.5"/>
+  <text x="403" y="747" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">Troubleshooter (failure path only)</text>
+  <rect x="284" y="761" width="238" height="24" rx="5" fill="#B45309"/>
+  <text x="403" y="777" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">troubleshoot.py</text>
+  <rect x="284" y="789" width="238" height="24" rx="5" fill="#B45309"/>
+  <text x="403" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">anthropic Python SDK</text>
+  <rect x="284" y="817" width="238" height="24" rx="5" fill="#B45309"/>
+  <text x="403" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">tools: run_sf, rerun_chunk</text>
+  <rect x="540" y="728" width="254" height="120" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_cli"><rect x="540" y="728" width="254" height="26" rx="8"/></clipPath>
+  <rect x="540" y="728" width="254" height="26" fill="#e2e8f0" clip-path="url(#clip_cli)"/>
+  <line x1="540" y1="754" x2="794" y2="754" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="667" y="747" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">External CLI tools</text>
+  <rect x="548" y="761" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="667" y="777" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">sf CLI v2 (Node)</text>
+  <rect x="548" y="789" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="667" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">jq</text>
+  <rect x="548" y="817" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="667" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Java JVM</text>
+  <rect x="804" y="728" width="518" height="92" rx="8" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+  <clipPath id="clip_sf"><rect x="804" y="728" width="518" height="26" rx="8"/></clipPath>
+  <rect x="804" y="728" width="518" height="26" fill="#c7d2fe" clip-path="url(#clip_sf)"/>
+  <line x1="804" y1="754" x2="1322" y2="754" stroke="#6366f1" stroke-width="0.8" opacity="0.5"/>
+  <text x="1063" y="747" text-anchor="middle" font-size="12" font-weight="600" fill="#6366f1">Salesforce org (external SaaS)</text>
+  <rect x="812" y="761" width="502" height="24" rx="5" fill="#0891B2"/>
+  <text x="1063" y="777" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Metadata API</text>
+  <rect x="812" y="789" width="502" height="24" rx="5" fill="#0891B2"/>
+  <text x="1063" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Tooling API (SOQL)</text>
+  <rect x="1332" y="728" width="254" height="92" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <clipPath id="clip_anthropic"><rect x="1332" y="728" width="254" height="26" rx="8"/></clipPath>
+  <rect x="1332" y="728" width="254" height="26" fill="#fed7aa" clip-path="url(#clip_anthropic)"/>
+  <line x1="1332" y1="754" x2="1586" y2="754" stroke="#ea580c" stroke-width="0.8" opacity="0.5"/>
+  <text x="1459" y="747" text-anchor="middle" font-size="12" font-weight="600" fill="#ea580c">Anthropic API (external SaaS)</text>
+  <rect x="1340" y="761" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="1459" y="777" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Claude Sonnet 4.6</text>
+  <rect x="1340" y="789" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="1459" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">messages API (HTTPS)</text>
+  <path d="M 667 146 L 667 210 L 271 210 L 271 202" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="425" y="202" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="469" y="213" text-anchor="middle" font-size="9" fill="#1d4ed8" font-weight="600">opens browser</text>
+  <path d="M 667 146 L 667 244 L 1063 244 L 1063 202" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="767" y="236" width="196" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="865" y="247" text-anchor="middle" font-size="9" fill="#7c3aed" font-weight="600">starts uvicorn (port 8765-8774)</text>
+  <path d="M 271 202 L 271 278 L 1063 278 L 1063 202" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="623" y="270" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="667" y="281" text-anchor="middle" font-size="9" fill="#0f766e" font-weight="600">HTTP GET/POST</text>
+  <path d="M 271 202 L 271 312 L 1063 312 L 1063 202" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="569" y="304" width="196" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="667" y="315" text-anchor="middle" font-size="9" fill="#b45309" font-weight="600">WebSocket (live chunk progress)</text>
+  <path d="M 1063 202 L 1063 346 L 1459 346 L 1459 202" fill="none" stroke="#9f1239" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="1208" y="338" width="106" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="1261" y="349" text-anchor="middle" font-size="9" fill="#9f1239" font-weight="600">config + API key</text>
+  <path d="M 1063 202 L 1063 380 L 1459 380 L 1459 202" fill="none" stroke="#0369a1" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="1196" y="372" width="130" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="1261" y="383" text-anchor="middle" font-size="9" fill="#0369a1" font-weight="600">writes after success</text>
+  <path d="M 139 728 L 139 414 L 667 414 L 667 728" fill="none" stroke="#6d28d9" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="338" y="406" width="130" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="403" y="417" text-anchor="middle" font-size="9" fill="#6d28d9" font-weight="600">subprocess per chunk</text>
+  <path d="M 667 728 L 667 448 L 1063 448 L 1063 728" fill="none" stroke="#0e7490" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="788" y="440" width="154" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="865" y="451" text-anchor="middle" font-size="9" fill="#0e7490" font-weight="600">retrieve / list metadata</text>
+  <path d="M 667 728 L 667 482 L 1063 482 L 1063 728" fill="none" stroke="#92400e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="773" y="474" width="184" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="865" y="485" text-anchor="middle" font-size="9" fill="#92400e" font-weight="600">SOQL on Folder/PackageLicense</text>
+  <path d="M 403 728 L 403 516 L 667 516 L 667 728" fill="none" stroke="#065f46" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="470" y="508" width="130" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="535" y="519" text-anchor="middle" font-size="9" fill="#065f46" font-weight="600">run_sf / rerun_chunk</text>
+  <path d="M 403 728 L 403 550 L 1459 550 L 1459 728" fill="none" stroke="#1e3a5f" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="857" y="542" width="148" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="931" y="553" text-anchor="middle" font-size="9" fill="#1e3a5f" font-weight="600">messages.create (HTTPS)</text>
+  <path d="M 1063 202 L 1063 584 L 139 584 L 139 728" fill="none" stroke="#4a044e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="545" y="576" width="112" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="601" y="587" text-anchor="middle" font-size="9" fill="#4a044e" font-weight="600">spawns subprocess</text>
+  <path d="M 139 728 L 139 618 L 1063 618 L 1063 202" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="512" y="610" width="178" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="601" y="621" text-anchor="middle" font-size="9" fill="#1d4ed8" font-weight="600">parsed by parent → WebSocket</text>
+  <path d="M 1063 202 L 1063 652 L 403 652 L 403 728" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="644" y="644" width="178" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="733" y="655" text-anchor="middle" font-size="9" fill="#7c3aed" font-weight="600">spawns ONLY on chunk failure</text>
+  <path d="M 139 728 L 139 686 L 1459 686 L 1459 202" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="701" y="678" width="196" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="799" y="689" text-anchor="middle" font-size="9" fill="#0f766e" font-weight="600">writes chunked manifests + logs</text>
+  <path d="M 667 146 L 667 720 L 667 720 L 667 728" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="590" y="712" width="154" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="667" y="723" text-anchor="middle" font-size="9" fill="#b45309" font-weight="600">detects + offers install</text>
+  <rect x="8" y="850" width="1584" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="12" y="858" width="13" height="13" rx="3" fill="#475569"/>
+  <text x="29" y="869" font-size="11" fill="#374151">Existing</text>
+  <rect x="274" y="858" width="13" height="13" rx="3" fill="#0891B2"/>
+  <text x="291" y="869" font-size="11" fill="#374151">New</text>
+  <rect x="536" y="858" width="13" height="13" rx="3" fill="#B45309"/>
+  <text x="553" y="869" font-size="11" fill="#374151">Transitioning</text>
+  <rect x="798" y="858" width="13" height="13" rx="3" fill="#DC2626"/>
+  <text x="815" y="869" font-size="11" fill="#374151">Retiring</text>
+  <rect x="1060" y="858" width="13" height="13" rx="3" fill="#15803D"/>
+  <text x="1077" y="869" font-size="11" fill="#374151">Operational</text>
+  <rect x="1322" y="858" width="13" height="13" rx="3" fill="#94A3B8"/>
+  <text x="1339" y="869" font-size="11" fill="#374151">Read-Only</text>
+</svg>
