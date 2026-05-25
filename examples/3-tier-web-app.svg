@@ -1,0 +1,144 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" style="font-family:ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#ffffff;">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1600" height="48" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="800" y="18" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">3-tier web app</text>
+  <text x="800" y="36" text-anchor="middle" font-size="12" fill="#64748b">classic frontend / backend / data</text>
+  <rect x="12" y="54" width="782" height="92" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_web"><rect x="12" y="54" width="782" height="26" rx="8"/></clipPath>
+  <rect x="12" y="54" width="782" height="26" fill="#e2e8f0" clip-path="url(#clip_web)"/>
+  <line x1="12" y1="80" x2="794" y2="80" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="403" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Web app</text>
+  <rect x="20" y="87" width="766" height="24" rx="5" fill="#15803D"/>
+  <text x="403" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">React SPA</text>
+  <rect x="20" y="115" width="766" height="24" rx="5" fill="#15803D"/>
+  <text x="403" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">WebSocket client</text>
+  <rect x="804" y="54" width="782" height="92" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_mobile"><rect x="804" y="54" width="782" height="26" rx="8"/></clipPath>
+  <rect x="804" y="54" width="782" height="26" fill="#e2e8f0" clip-path="url(#clip_mobile)"/>
+  <line x1="804" y1="80" x2="1586" y2="80" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="1195" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Mobile</text>
+  <rect x="812" y="87" width="766" height="24" rx="5" fill="#15803D"/>
+  <text x="1195" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">iOS app</text>
+  <rect x="812" y="115" width="766" height="24" rx="5" fill="#15803D"/>
+  <text x="1195" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Android app</text>
+  <rect x="12" y="367" width="518" height="92" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_api"><rect x="12" y="367" width="518" height="26" rx="8"/></clipPath>
+  <rect x="12" y="367" width="518" height="26" fill="#e2e8f0" clip-path="url(#clip_api)"/>
+  <line x1="12" y1="393" x2="530" y2="393" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="271" y="386" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">API gateway</text>
+  <rect x="20" y="400" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="271" y="416" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">REST routes</text>
+  <rect x="20" y="428" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="271" y="444" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">WS hub</text>
+  <rect x="540" y="367" width="518" height="92" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+  <clipPath id="clip_auth"><rect x="540" y="367" width="518" height="26" rx="8"/></clipPath>
+  <rect x="540" y="367" width="518" height="26" fill="#fde68a" clip-path="url(#clip_auth)"/>
+  <line x1="540" y1="393" x2="1058" y2="393" stroke="#b45309" stroke-width="0.8" opacity="0.5"/>
+  <text x="799" y="386" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">Auth svc</text>
+  <rect x="548" y="400" width="502" height="24" rx="5" fill="#B45309"/>
+  <text x="799" y="416" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Login flow</text>
+  <rect x="548" y="428" width="502" height="24" rx="5" fill="#B45309"/>
+  <text x="799" y="444" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">JWT issuer</text>
+  <rect x="1068" y="367" width="518" height="92" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <clipPath id="clip_billing"><rect x="1068" y="367" width="518" height="26" rx="8"/></clipPath>
+  <rect x="1068" y="367" width="518" height="26" fill="#bbf7d0" clip-path="url(#clip_billing)"/>
+  <line x1="1068" y1="393" x2="1586" y2="393" stroke="#16a34a" stroke-width="0.8" opacity="0.5"/>
+  <text x="1327" y="386" text-anchor="middle" font-size="12" font-weight="600" fill="#16a34a">Billing svc</text>
+  <rect x="1076" y="400" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="1327" y="416" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Invoicing</text>
+  <rect x="1076" y="428" width="502" height="24" rx="5" fill="#15803D"/>
+  <text x="1327" y="444" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Webhook receiver</text>
+  <rect x="12" y="756" width="518" height="92" rx="8" fill="#f0f9ff" stroke="#0369a1" stroke-width="1.5"/>
+  <clipPath id="clip_postgres"><rect x="12" y="756" width="518" height="26" rx="8"/></clipPath>
+  <rect x="12" y="756" width="518" height="26" fill="#e0f2fe" clip-path="url(#clip_postgres)"/>
+  <line x1="12" y1="782" x2="530" y2="782" stroke="#0369a1" stroke-width="0.8" opacity="0.5"/>
+  <text x="271" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#0369a1">Postgres</text>
+  <rect x="20" y="789" width="502" height="24" rx="5" fill="#0891B2"/>
+  <text x="271" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">users</text>
+  <rect x="20" y="817" width="502" height="24" rx="5" fill="#0891B2"/>
+  <text x="271" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">billing_events</text>
+  <rect x="540" y="756" width="254" height="64" rx="8" fill="#fff1f2" stroke="#be123c" stroke-width="1.5"/>
+  <clipPath id="clip_redis"><rect x="540" y="756" width="254" height="26" rx="8"/></clipPath>
+  <rect x="540" y="756" width="254" height="26" fill="#fecdd3" clip-path="url(#clip_redis)"/>
+  <line x1="540" y1="782" x2="794" y2="782" stroke="#be123c" stroke-width="0.8" opacity="0.5"/>
+  <text x="667" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#be123c">Redis</text>
+  <rect x="548" y="789" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="667" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">session cache</text>
+  <rect x="804" y="756" width="254" height="92" rx="8" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
+  <clipPath id="clip_stripe"><rect x="804" y="756" width="254" height="26" rx="8"/></clipPath>
+  <rect x="804" y="756" width="254" height="26" fill="#fbcfe8" clip-path="url(#clip_stripe)"/>
+  <line x1="804" y1="782" x2="1058" y2="782" stroke="#db2777" stroke-width="0.8" opacity="0.5"/>
+  <text x="931" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#db2777">Stripe</text>
+  <rect x="812" y="789" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="931" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Charges API</text>
+  <rect x="812" y="817" width="238" height="24" rx="5" fill="#0891B2"/>
+  <text x="931" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">Webhooks</text>
+  <rect x="1068" y="756" width="518" height="92" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+  <clipPath id="clip_okta"><rect x="1068" y="756" width="518" height="26" rx="8"/></clipPath>
+  <rect x="1068" y="756" width="518" height="26" fill="#fde68a" clip-path="url(#clip_okta)"/>
+  <line x1="1068" y1="782" x2="1586" y2="782" stroke="#b45309" stroke-width="0.8" opacity="0.5"/>
+  <text x="1327" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">Okta</text>
+  <rect x="1076" y="789" width="502" height="24" rx="5" fill="#0891B2"/>
+  <text x="1327" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">OIDC</text>
+  <rect x="1076" y="817" width="502" height="24" rx="5" fill="#0891B2"/>
+  <text x="1327" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">SCIM</text>
+  <path d="M 403 146 L 403 154 L 271 154 L 271 367" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="307" y="146" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="337" y="157" text-anchor="middle" font-size="9" fill="#1d4ed8" font-weight="600">HTTPS</text>
+  <path d="M 403 146 L 403 195 L 271 195 L 271 367" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="307" y="187" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="337" y="198" text-anchor="middle" font-size="9" fill="#7c3aed" font-weight="600">WSS</text>
+  <path d="M 1195 146 L 1195 236 L 271 236 L 271 367" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="703" y="228" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="733" y="239" text-anchor="middle" font-size="9" fill="#0f766e" font-weight="600">HTTPS</text>
+  <path d="M 1195 146 L 1195 277 L 271 277 L 271 367" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="703" y="269" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="733" y="280" text-anchor="middle" font-size="9" fill="#b45309" font-weight="600">HTTPS</text>
+  <path d="M 271 367 L 271 318 L 799 318 L 799 367" fill="none" stroke="#9f1239" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="500" y="310" width="70" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="535" y="321" text-anchor="middle" font-size="9" fill="#9f1239" font-weight="600">verify JWT</text>
+  <path d="M 271 367 L 271 359 L 1327 359 L 1327 367" fill="none" stroke="#0369a1" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="769" y="351" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="799" y="362" text-anchor="middle" font-size="9" fill="#0369a1" font-weight="600">forward</text>
+  <path d="M 271 459 L 271 467 L 271 467 L 271 756" fill="none" stroke="#6d28d9" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="241" y="459" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="271" y="470" text-anchor="middle" font-size="9" fill="#6d28d9" font-weight="600">reads</text>
+  <path d="M 271 459 L 271 507 L 667 507 L 667 756" fill="none" stroke="#0e7490" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="439" y="499" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="469" y="510" text-anchor="middle" font-size="9" fill="#0e7490" font-weight="600">pub/sub</text>
+  <path d="M 799 459 L 799 547 L 1327 547 L 1327 756" fill="none" stroke="#92400e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="1033" y="539" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="1063" y="550" text-anchor="middle" font-size="9" fill="#92400e" font-weight="600">OAuth2</text>
+  <path d="M 799 459 L 799 587 L 667 587 L 667 756" fill="none" stroke="#065f46" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="689" y="579" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="733" y="590" text-anchor="middle" font-size="9" fill="#065f46" font-weight="600">stores claims</text>
+  <path d="M 1327 459 L 1327 627 L 271 627 L 271 756" fill="none" stroke="#1e3a5f" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="769" y="619" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="799" y="630" text-anchor="middle" font-size="9" fill="#1e3a5f" font-weight="600">writes</text>
+  <path d="M 1327 459 L 1327 667 L 931 667 L 931 756" fill="none" stroke="#4a044e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="1085" y="659" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="1129" y="670" text-anchor="middle" font-size="9" fill="#4a044e" font-weight="600">verifies sigs</text>
+  <path d="M 1327 459 L 1327 707 L 931 707 L 931 756" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="1085" y="699" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="1129" y="710" text-anchor="middle" font-size="9" fill="#1d4ed8" font-weight="600">POST /charges</text>
+  <path d="M 931 756 L 931 748 L 271 748 L 271 756" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="557" y="740" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="601" y="751" text-anchor="middle" font-size="9" fill="#7c3aed" font-weight="600">(via billing)</text>
+  <rect x="8" y="850" width="1584" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="12" y="858" width="13" height="13" rx="3" fill="#475569"/>
+  <text x="29" y="869" font-size="11" fill="#374151">Existing</text>
+  <rect x="274" y="858" width="13" height="13" rx="3" fill="#0891B2"/>
+  <text x="291" y="869" font-size="11" fill="#374151">New</text>
+  <rect x="536" y="858" width="13" height="13" rx="3" fill="#B45309"/>
+  <text x="553" y="869" font-size="11" fill="#374151">Transitioning</text>
+  <rect x="798" y="858" width="13" height="13" rx="3" fill="#DC2626"/>
+  <text x="815" y="869" font-size="11" fill="#374151">Retiring</text>
+  <rect x="1060" y="858" width="13" height="13" rx="3" fill="#15803D"/>
+  <text x="1077" y="869" font-size="11" fill="#374151">Operational</text>
+  <rect x="1322" y="858" width="13" height="13" rx="3" fill="#94A3B8"/>
+  <text x="1339" y="869" font-size="11" fill="#374151">Read-Only</text>
+</svg>

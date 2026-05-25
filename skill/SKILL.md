@@ -17,11 +17,11 @@ description: >
 
 Produces fixed-width (1600 px) SVG architecture diagrams with:
 - A title / subtitle header band at the top
-- A **6-column, 2-row grid** of technology containers (each container holds
-  colour-coded component nodes)
-- **Orthogonal edge routing** — all connection lines travel through the gap
-  between the two rows (or arc above the header) so they never pass through
-  container bodies
+- A **6-column grid** with **up to 3 rows** of technology containers (each
+  container holds colour-coded component nodes)
+- **Orthogonal single-spine edge routing** — all connection lines travel
+  through the spine zone(s) between adjacent rows so they never pass
+  through container bodies
 - A status-colour legend at the bottom
 
 ## Workflow
@@ -108,21 +108,39 @@ config = {
 
 ## Grid layout rules
 
-The diagram has **2 rows** and up to `num_cols` columns (default 6).
+The diagram has up to **3 rows** and up to `num_cols` columns (default 6).
 
-Assign each lane a `col` (0-based), `colspan`, and `row` (0 = top, 1 = bottom).
-Lane widths in a row must not overlap: `col + colspan` for each lane must stay
-within `num_cols`.
+Assign each lane a `col` (0-based), `colspan`, and `row` (`0` = top, `1` = middle,
+`2` = bottom). Lane widths in a row must not overlap: `col + colspan` for each
+lane must stay within `num_cols`. Row 2 is optional — omit it for a classic
+2-row diagram.
 
-**Suggested layout for 8-lane diagrams:**
+**Suggested 2-row layout:**
 
 | Row | Col 0-1 (span 2) | Col 2 | Col 3 | Col 4 | Col 5 |
 |-----|-----------------|-------|-------|-------|-------|
 | 0   | Large source (e.g. SF) | Mid-tier A | Mid-tier B | Mid-tier C | — |
 | 1   | Large target (e.g. GCP) | Ext A | Ext B | Ext C | Ext D |
 
-Containers in the top row connect to the bottom row via the spine in the gap
-between rows. Containers in the same row arc above the header band.
+**3-row layout — classic 3-tier (frontend / backend / data + externals):**
+
+| Row | Use it for |
+|-----|------------|
+| 0   | User-facing surfaces (browser, mobile, public APIs) |
+| 1   | Backend services / orchestration / business logic |
+| 2   | Data stores + external SaaS dependencies |
+
+### Routing rules (important for 3-row diagrams)
+
+Connections route through one of two spines:
+- **Spine 0↔1** (between rows 0 and 1) carries: row 0↔0, row 0↔1, row 1↔1.
+- **Spine 1↔2** (between rows 1 and 2) carries: row 1↔2, row 2↔2.
+
+**Forbidden:** connections that span row 0 ↔ row 2 directly. They'd have to
+cross row 1 container bodies, which defeats the no-overlap guarantee. The
+engine raises `ValueError` listing the offending edges. Route through a row 1
+container instead (recommended — usually models reality better), or split into
+two diagrams.
 
 ## Preset lane keys (colours auto-applied)
 

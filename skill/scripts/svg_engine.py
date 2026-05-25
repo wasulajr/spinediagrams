@@ -199,49 +199,103 @@ class Diagram:
     # ── Layout ───────────────────────────────────────────────────────────────
 
     def _compute_y(self):
-        row_h = {0: 0, 1: 0}
+        row_h = {0: 0, 1: 0, 2: 0}
         for c in self.conts.values():
             row_h[c["row"]] = max(row_h[c["row"]], c["h"])
+        has_row2 = row_h[2] > 0
 
-        # One spine line per raw connection (slot index = raw_conns index, so
-        # unroutable connections leave a gap rather than shift later lines).
-        n_conn = len(self.raw_conns)
+        # Categorize connections by which spine they'll use.
+        # spine 0↔1 carries: row 0↔0, row 0↔1, row 1↔1.
+        # spine 1↔2 carries: row 1↔2, row 2↔2.
+        # Forbidden: row 0 ↔ row 2 (non-adjacent — would have to cross row 1
+        # container bodies to route, defeating the no-overlap guarantee).
+        n_spine01 = n_spine12 = 0
+        forbidden = []
+        self.conn_spine = {}   # raw idx → ("01"|"12", per-spine line idx)
+        for idx, conn in enumerate(self.raw_conns):
+            if len(conn) < 4:
+                continue
+            sc = self.conts.get(conn[0])
+            dc = self.conts.get(conn[2])
+            if sc is None or dc is None:
+                continue
+            r1, r2 = sc["row"], dc["row"]
+            lo, hi = min(r1, r2), max(r1, r2)
+            if lo == 0 and hi == 2:
+                forbidden.append((idx, conn))
+                continue
+            if hi <= 1:
+                self.conn_spine[idx] = ("01", n_spine01)
+                n_spine01 += 1
+            else:
+                self.conn_spine[idx] = ("12", n_spine12)
+                n_spine12 += 1
 
-        # Baseline spine: enough room for SPINE_LINE_MIN spacing per line,
-        # plus a 16px buffer (8px clear above first / below last line).
-        base_spine = max(ROW_GAP, 16 + max(0, n_conn - 1) * SPINE_LINE_MIN)
-        self.row_gap = base_spine
+        if forbidden:
+            lines = "\n".join(f"  [{i}] {c[0]}:{c[1]} → {c[2]}:{c[3]}" for i, c in forbidden)
+            raise ValueError(
+                "spinediagrams: connections that span row 0 ↔ row 2 (non-adjacent) "
+                "are not supported — the engine can't route them without crossing "
+                "middle-row container bodies. Route through a row 1 container, or "
+                "split into two diagrams.\nForbidden connections:\n" + lines
+            )
 
-        baseline_h = HEADER_H + 6 + row_h[0] + self.row_gap + row_h.get(1, 0) + BOT_PAD
+        # Spine sizing: each spine fits its lines with SPINE_LINE_MIN spacing.
+        spine01 = max(ROW_GAP, 16 + max(0, n_spine01 - 1) * SPINE_LINE_MIN)
+        spine12 = max(ROW_GAP, 16 + max(0, n_spine12 - 1) * SPINE_LINE_MIN) if has_row2 else 0
 
-        # Pad canvas toward target aspect by growing the spine — extra
-        # vertical room translates directly into more space between arrow
-        # labels, which is the actual readability win.
+        baseline_h = (HEADER_H + 6 + row_h[0] + spine01 + row_h[1]
+                      + (spine12 + row_h[2] if has_row2 else 0) + BOT_PAD)
+
+        # Pad to target aspect by growing the spines — extra vertical room
+        # spreads arrow labels further apart, the actual readability win.
+        # Distribute proportional to each spine's connection count; if one
+        # spine has no connections, its share goes to the other.
         target_h = int(CW / self.target_aspect)
         if baseline_h < target_h:
-            self.row_gap += target_h - baseline_h
+            extra = target_h - baseline_h
+            total = n_spine01 + n_spine12
+            if not has_row2 or total == 0:
+                spine01 += extra
+            else:
+                share01 = int(extra * max(1, n_spine01) / (max(1, n_spine01) + max(1, n_spine12)))
+                spine01 += share01
+                spine12 += extra - share01
+
+        self.spine01_gap = spine01
+        self.spine12_gap = spine12
+        self.has_row2 = has_row2
 
         self.row0_y   = HEADER_H + 6
-        self.row1_y   = self.row0_y + row_h[0] + self.row_gap
         self.row0_bot = self.row0_y + row_h[0]
-        self.row1_bot = self.row1_y + row_h.get(1, 0)
-        self.canvas_h = self.row1_bot + BOT_PAD
-
-        # Pre-compute the y position of every spine line, evenly distributed
-        # across the available spine span. Single-line case sits centered.
-        spine_top = self.row0_bot + 8
-        spine_bot = self.row1_y - 8
-        if n_conn <= 1:
-            self.spine_lines = [(spine_top + spine_bot) // 2]
+        self.row1_y   = self.row0_bot + spine01
+        self.row1_bot = self.row1_y + row_h[1]
+        if has_row2:
+            self.row2_y   = self.row1_bot + spine12
+            self.row2_bot = self.row2_y + row_h[2]
+            self.canvas_h = self.row2_bot + BOT_PAD
         else:
-            span = spine_bot - spine_top
-            step = span / (n_conn - 1)
-            self.spine_lines = [int(spine_top + i * step) for i in range(n_conn)]
-        # Legacy field still referenced elsewhere (centered fallback).
-        self.spine_y = (spine_top + spine_bot) // 2
+            self.row2_y = self.row2_bot = self.row1_bot
+            self.canvas_h = self.row1_bot + BOT_PAD
+
+        self.spine01_lines = self._distribute_spine(self.row0_bot + 8, self.row1_y - 8, n_spine01)
+        self.spine12_lines = (self._distribute_spine(self.row1_bot + 8, self.row2_y - 8, n_spine12)
+                              if has_row2 else [])
+        # Legacy single-spine field — points at spine01 center for back-compat.
+        self.spine_y = (self.row0_bot + self.row1_y) // 2
 
         for c in self.conts.values():
-            c["y"] = self.row0_y if c["row"] == 0 else self.row1_y
+            r = c["row"]
+            c["y"] = self.row0_y if r == 0 else self.row1_y if r == 1 else self.row2_y
+
+    @staticmethod
+    def _distribute_spine(top, bot, n):
+        if n <= 0:
+            return []
+        if n == 1:
+            return [(top + bot) // 2]
+        step = (bot - top) / (n - 1)
+        return [int(top + i * step) for i in range(n)]
 
     # ── Geometry helpers ─────────────────────────────────────────────────────
 
@@ -284,18 +338,29 @@ class Diagram:
                 return nx + nw // 2
             return c["x"] + c["w"] // 2
 
-        def spine_edge(c):
-            # y coord of the container edge facing the spine.
-            return c["y"] + c["h"] if c["row"] == 0 else c["y"]
-
         sx = anchor_x(src_c, si)
         dx = anchor_x(dst_c, di)
-        # Each routable connection gets a dedicated, pre-computed spine line.
-        spine = self.spine_lines[idx] if idx < len(self.spine_lines) else self.spine_y
 
-        return [(sx, spine_edge(src_c)),
+        info = self.conn_spine.get(idx)
+        if info is None:
+            return None
+        spine_id, line_idx = info
+        if spine_id == "01":
+            spine = self.spine01_lines[line_idx]
+            # spine 0↔1 sits between rows 0 and 1: row 0 exits its bottom edge,
+            # row 1 exits its top edge.
+            def edge(c):
+                return c["y"] + c["h"] if c["row"] == 0 else c["y"]
+        else:
+            spine = self.spine12_lines[line_idx]
+            # spine 1↔2 sits between rows 1 and 2: row 1 exits its bottom edge,
+            # row 2 exits its top edge.
+            def edge(c):
+                return c["y"] + c["h"] if c["row"] == 1 else c["y"]
+
+        return [(sx, edge(src_c)),
                 (sx, spine), (dx, spine),
-                (dx, spine_edge(dst_c))]
+                (dx, edge(dst_c))]
 
     # ── SVG render ───────────────────────────────────────────────────────────
 
