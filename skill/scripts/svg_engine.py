@@ -125,10 +125,10 @@ def _esc(s):
             .replace('"', "&quot;"))
 
 
-def _col_bounds(col, colspan, num_cols, margin, col_gap):
-    avail = CW - 2 * margin - (num_cols - 1) * col_gap
+def _col_bounds(col, colspan, num_cols, margin_left, margin_right, col_gap):
+    avail = CW - margin_left - margin_right - (num_cols - 1) * col_gap
     col_w = avail // num_cols
-    x = margin + col * (col_w + col_gap)
+    x = margin_left + col * (col_w + col_gap)
     w = colspan * col_w + (colspan - 1) * col_gap
     return x, w, col_w
 
@@ -154,6 +154,10 @@ def _parse_aspect(val):
 
 # Minimum vertical spacing between spine lines so 14px label pills don't kiss.
 SPINE_LINE_MIN = 22
+# Horizontal spacing between sidestep channel lines inside the margin.
+SIDESTEP_CHANNEL_STEP = 6
+# Reserved padding inside the canvas edge before sidestep channels start.
+SIDESTEP_EDGE_PAD = 6
 
 
 # ── Main class ────────────────────────────────────────────────────────────────
@@ -170,13 +174,45 @@ class Diagram:
         nodes_cfg     = config.get("nodes", {})
         self.raw_conns = config.get("connections", [])
 
+        # Pre-pass: identify row 0 ↔ row 2 sidestep connections so we can
+        # reserve margin channel space for them BEFORE laying out containers.
+        # Side (left vs right) is chosen by the midpoint of src+dst columns.
+        self.conn_meta = {}
+        n_left = n_right = 0
+        for idx, conn in enumerate(self.raw_conns):
+            if len(conn) < 4:
+                continue
+            sl = lanes_cfg.get(conn[0])
+            dl = lanes_cfg.get(conn[2])
+            if sl is None or dl is None:
+                continue
+            r1, r2 = int(sl.get("row", 0)), int(dl.get("row", 0))
+            if min(r1, r2) == 0 and max(r1, r2) == 2:
+                src_mid = sl.get("col", 0) + sl.get("colspan", 1) / 2
+                dst_mid = dl.get("col", 0) + dl.get("colspan", 1) / 2
+                if (src_mid + dst_mid) / 2 < self.num_cols / 2:
+                    self.conn_meta[idx] = {"type": "sidestep", "side": "left", "ch_idx": n_left}
+                    n_left += 1
+                else:
+                    self.conn_meta[idx] = {"type": "sidestep", "side": "right", "ch_idx": n_right}
+                    n_right += 1
+        self.n_sidestep_left = n_left
+        self.n_sidestep_right = n_right
+
+        # Margins widen on whichever sides have sidestep channels.
+        def _margin(n):
+            return MARGIN if n == 0 else SIDESTEP_EDGE_PAD + n * SIDESTEP_CHANNEL_STEP + 6
+        self.margin_left = _margin(n_left)
+        self.margin_right = _margin(n_right)
+
         self.conts = {}
         for key, lane in lanes_cfg.items():
             col      = int(lane.get("col", 0))
             colspan  = int(lane.get("colspan", 1))
             row      = int(lane.get("row", 0))
             nodes    = nodes_cfg.get(key, [])
-            x, w, _  = _col_bounds(col, colspan, self.num_cols, MARGIN, COL_GAP)
+            x, w, _  = _col_bounds(col, colspan, self.num_cols,
+                                   self.margin_left, self.margin_right, COL_GAP)
 
             # Resolve colours: explicit > preset lookup > generic
             preset = LANE_PRESETS.get(key, LANE_PRESETS["generic"])
@@ -194,6 +230,15 @@ class Diagram:
                 "nodes": [{"label": n[0], "status": n[1]} for n in nodes],
             }
 
+        # Pre-compute the X position of each sidestep channel (one per
+        # sidestep connection, on its assigned side).
+        self.sidestep_x = {}
+        for idx, meta in self.conn_meta.items():
+            if meta.get("type") != "sidestep":
+                continue
+            offset = SIDESTEP_EDGE_PAD + meta["ch_idx"] * SIDESTEP_CHANNEL_STEP
+            self.sidestep_x[idx] = offset if meta["side"] == "left" else CW - offset
+
         self._compute_y()
 
     # ── Layout ───────────────────────────────────────────────────────────────
@@ -204,14 +249,13 @@ class Diagram:
             row_h[c["row"]] = max(row_h[c["row"]], c["h"])
         has_row2 = row_h[2] > 0
 
-        # Categorize connections by which spine they'll use.
-        # spine 0↔1 carries: row 0↔0, row 0↔1, row 1↔1.
-        # spine 1↔2 carries: row 1↔2, row 2↔2.
-        # Forbidden: row 0 ↔ row 2 (non-adjacent — would have to cross row 1
-        # container bodies to route, defeating the no-overlap guarantee).
+        # Per-spine line counts. Sidesteps (row 0↔2) consume ONE line in
+        # EACH spine (they pass through both horizontally on their way
+        # around through the margin channel).
+        #
+        #   spine 0↔1 carries:  row 0↔0, row 0↔1, row 1↔1, plus sidestep horizontals
+        #   spine 1↔2 carries:  row 1↔2, row 2↔2,         plus sidestep horizontals
         n_spine01 = n_spine12 = 0
-        forbidden = []
-        self.conn_spine = {}   # raw idx → ("01"|"12", per-spine line idx)
         for idx, conn in enumerate(self.raw_conns):
             if len(conn) < 4:
                 continue
@@ -222,23 +266,18 @@ class Diagram:
             r1, r2 = sc["row"], dc["row"]
             lo, hi = min(r1, r2), max(r1, r2)
             if lo == 0 and hi == 2:
-                forbidden.append((idx, conn))
-                continue
-            if hi <= 1:
-                self.conn_spine[idx] = ("01", n_spine01)
+                # Already categorized as sidestep in __init__; just assign spine indices.
+                meta = self.conn_meta[idx]
+                meta["sp01_idx"] = n_spine01
+                meta["sp12_idx"] = n_spine12
+                n_spine01 += 1
+                n_spine12 += 1
+            elif hi <= 1:
+                self.conn_meta[idx] = {"type": "spine01", "sp01_idx": n_spine01}
                 n_spine01 += 1
             else:
-                self.conn_spine[idx] = ("12", n_spine12)
+                self.conn_meta[idx] = {"type": "spine12", "sp12_idx": n_spine12}
                 n_spine12 += 1
-
-        if forbidden:
-            lines = "\n".join(f"  [{i}] {c[0]}:{c[1]} → {c[2]}:{c[3]}" for i, c in forbidden)
-            raise ValueError(
-                "spinediagrams: connections that span row 0 ↔ row 2 (non-adjacent) "
-                "are not supported — the engine can't route them without crossing "
-                "middle-row container bodies. Route through a row 1 container, or "
-                "split into two diagrams.\nForbidden connections:\n" + lines
-            )
 
         # Spine sizing: each spine fits its lines with SPINE_LINE_MIN spacing.
         spine01 = max(ROW_GAP, 16 + max(0, n_spine01 - 1) * SPINE_LINE_MIN)
@@ -341,20 +380,42 @@ class Diagram:
         sx = anchor_x(src_c, si)
         dx = anchor_x(dst_c, di)
 
-        info = self.conn_spine.get(idx)
-        if info is None:
+        meta = self.conn_meta.get(idx)
+        if meta is None:
             return None
-        spine_id, line_idx = info
-        if spine_id == "01":
-            spine = self.spine01_lines[line_idx]
-            # spine 0↔1 sits between rows 0 and 1: row 0 exits its bottom edge,
-            # row 1 exits its top edge.
+        kind = meta["type"]
+
+        if kind == "sidestep":
+            # 6-point path: drop from src to spine01, across to margin
+            # channel, down through margin to spine12, across to dst column,
+            # drop to dst. The margin channel stays outside all container
+            # bodies, so the line never overlaps anything.
+            sp01 = self.spine01_lines[meta["sp01_idx"]]
+            sp12 = self.spine12_lines[meta["sp12_idx"]]
+            ch_x = self.sidestep_x[idx]
+            # src is in row 0 or row 2 — exit edge facing the nearer spine.
+            src_edge = src_c["y"] + src_c["h"] if src_c["row"] == 0 else src_c["y"]
+            dst_edge = dst_c["y"] + dst_c["h"] if dst_c["row"] == 0 else dst_c["y"]
+            # Ensure we head from src spine to dst spine via the channel.
+            if src_c["row"] == 0:
+                return [(sx, src_edge),
+                        (sx, sp01), (ch_x, sp01),
+                        (ch_x, sp12),
+                        (dx, sp12), (dx, dst_edge)]
+            else:
+                return [(sx, src_edge),
+                        (sx, sp12), (ch_x, sp12),
+                        (ch_x, sp01),
+                        (dx, sp01), (dx, dst_edge)]
+
+        if kind == "spine01":
+            spine = self.spine01_lines[meta["sp01_idx"]]
+            # spine 0↔1: row 0 exits bottom, row 1 exits top.
             def edge(c):
                 return c["y"] + c["h"] if c["row"] == 0 else c["y"]
-        else:
-            spine = self.spine12_lines[line_idx]
-            # spine 1↔2 sits between rows 1 and 2: row 1 exits its bottom edge,
-            # row 2 exits its top edge.
+        else:  # spine12
+            spine = self.spine12_lines[meta["sp12_idx"]]
+            # spine 1↔2: row 1 exits bottom, row 2 exits top.
             def edge(c):
                 return c["y"] + c["h"] if c["row"] == 1 else c["y"]
 
@@ -410,16 +471,27 @@ class Diagram:
             d = "M " + " L ".join(f"{int(p[0])} {int(p[1])}" for p in pts)
             o.append(f'  <path d="{d}" fill="none" stroke="{color}" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>')
             if elbl and len(pts) >= 3:
-                mx = (pts[1][0] + pts[2][0]) / 2
-                my = (pts[1][1] + pts[2][1]) / 2
-                lw = max(60, len(elbl) * 6 + 10)
-                o.append(f'  <rect x="{int(mx-lw/2)}" y="{int(my-8)}" width="{lw}" height="14" rx="3" fill="white" opacity="0.92"/>')
-                o.append(f'  <text x="{int(mx)}" y="{int(my+3)}" text-anchor="middle" font-size="9" fill="{color}" font-weight="600">{_esc(elbl)}</text>')
+                # Place label on the longest horizontal segment in the path.
+                # For 4-point spine paths there's only one; for 6-point
+                # sidestep paths we pick whichever spine leg is longer.
+                best = None
+                for i in range(len(pts) - 1):
+                    if pts[i][1] == pts[i + 1][1]:  # horizontal
+                        length = abs(pts[i + 1][0] - pts[i][0])
+                        if best is None or length > best[0]:
+                            best = (length, pts[i], pts[i + 1])
+                if best is not None:
+                    _, p1, p2 = best
+                    mx = (p1[0] + p2[0]) / 2
+                    my = (p1[1] + p2[1]) / 2
+                    lw = max(60, len(elbl) * 6 + 10)
+                    o.append(f'  <rect x="{int(mx-lw/2)}" y="{int(my-8)}" width="{lw}" height="14" rx="3" fill="white" opacity="0.92"/>')
+                    o.append(f'  <text x="{int(mx)}" y="{int(my+3)}" text-anchor="middle" font-size="9" fill="{color}" font-weight="600">{_esc(elbl)}</text>')
 
         # Legend
-        lx, ly = MARGIN, h - 36
-        bw = (CW - 2 * MARGIN) // len(LEGEND_ENTRIES)
-        o.append(f'  <rect x="{lx-4}" y="{ly-14}" width="{CW-2*MARGIN+8}" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>')
+        lx, ly = self.margin_left, h - 36
+        bw = (CW - self.margin_left - self.margin_right) // len(LEGEND_ENTRIES)
+        o.append(f'  <rect x="{lx-4}" y="{ly-14}" width="{CW-self.margin_left-self.margin_right+8}" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>')
         for i, (status, lbl) in enumerate(LEGEND_ENTRIES):
             fill, _ = STATUS_COLOR[status]
             ex = lx + i * bw

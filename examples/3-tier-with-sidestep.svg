@@ -1,0 +1,109 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" style="font-family:ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#ffffff;">
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1600" height="48" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="800" y="18" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">3-tier + sidestep</text>
+  <text x="800" y="36" text-anchor="middle" font-size="12" fill="#64748b">direct browser → CDN / analytics paths</text>
+  <rect x="24" y="54" width="510" height="92" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_web"><rect x="24" y="54" width="510" height="26" rx="8"/></clipPath>
+  <rect x="24" y="54" width="510" height="26" fill="#e2e8f0" clip-path="url(#clip_web)"/>
+  <line x1="24" y1="80" x2="534" y2="80" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="279" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Web app</text>
+  <rect x="32" y="87" width="494" height="24" rx="5" fill="#15803D"/>
+  <text x="279" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">React SPA</text>
+  <rect x="32" y="115" width="494" height="24" rx="5" fill="#15803D"/>
+  <text x="279" y="131" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">pageview tracker</text>
+  <rect x="544" y="54" width="510" height="64" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_mobile"><rect x="544" y="54" width="510" height="26" rx="8"/></clipPath>
+  <rect x="544" y="54" width="510" height="26" fill="#e2e8f0" clip-path="url(#clip_mobile)"/>
+  <line x1="544" y1="80" x2="1054" y2="80" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="799" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Mobile</text>
+  <rect x="552" y="87" width="494" height="24" rx="5" fill="#15803D"/>
+  <text x="799" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">iOS app</text>
+  <rect x="1064" y="54" width="510" height="64" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <clipPath id="clip_ext"><rect x="1064" y="54" width="510" height="26" rx="8"/></clipPath>
+  <rect x="1064" y="54" width="510" height="26" fill="#fed7aa" clip-path="url(#clip_ext)"/>
+  <line x1="1064" y1="80" x2="1574" y2="80" stroke="#ea580c" stroke-width="0.8" opacity="0.5"/>
+  <text x="1319" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#ea580c">3rd party widget</text>
+  <rect x="1072" y="87" width="494" height="24" rx="5" fill="#0891B2"/>
+  <text x="1319" y="103" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">embedded JS</text>
+  <rect x="24" y="449" width="770" height="92" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_api"><rect x="24" y="449" width="770" height="26" rx="8"/></clipPath>
+  <rect x="24" y="449" width="770" height="26" fill="#e2e8f0" clip-path="url(#clip_api)"/>
+  <line x1="24" y1="475" x2="794" y2="475" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="409" y="468" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">API</text>
+  <rect x="32" y="482" width="754" height="24" rx="5" fill="#15803D"/>
+  <text x="409" y="498" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">REST</text>
+  <rect x="32" y="510" width="754" height="24" rx="5" fill="#15803D"/>
+  <text x="409" y="526" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">WS</text>
+  <rect x="804" y="449" width="770" height="64" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="1.5"/>
+  <clipPath id="clip_auth"><rect x="804" y="449" width="770" height="26" rx="8"/></clipPath>
+  <rect x="804" y="449" width="770" height="26" fill="#fde68a" clip-path="url(#clip_auth)"/>
+  <line x1="804" y1="475" x2="1574" y2="475" stroke="#b45309" stroke-width="0.8" opacity="0.5"/>
+  <text x="1189" y="468" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">Auth</text>
+  <rect x="812" y="482" width="754" height="24" rx="5" fill="#15803D"/>
+  <text x="1189" y="498" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">OIDC</text>
+  <rect x="24" y="756" width="510" height="92" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <clipPath id="clip_cdn"><rect x="24" y="756" width="510" height="26" rx="8"/></clipPath>
+  <rect x="24" y="756" width="510" height="26" fill="#fed7aa" clip-path="url(#clip_cdn)"/>
+  <line x1="24" y1="782" x2="534" y2="782" stroke="#ea580c" stroke-width="0.8" opacity="0.5"/>
+  <text x="279" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#ea580c">CDN (Cloudflare)</text>
+  <rect x="32" y="789" width="494" height="24" rx="5" fill="#0891B2"/>
+  <text x="279" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">edge cache</text>
+  <rect x="32" y="817" width="494" height="24" rx="5" fill="#0891B2"/>
+  <text x="279" y="833" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">asset bucket</text>
+  <rect x="544" y="756" width="510" height="64" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <clipPath id="clip_pg"><rect x="544" y="756" width="510" height="26" rx="8"/></clipPath>
+  <rect x="544" y="756" width="510" height="26" fill="#e2e8f0" clip-path="url(#clip_pg)"/>
+  <line x1="544" y1="782" x2="1054" y2="782" stroke="#64748b" stroke-width="0.8" opacity="0.5"/>
+  <text x="799" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Postgres</text>
+  <rect x="552" y="789" width="494" height="24" rx="5" fill="#0891B2"/>
+  <text x="799" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">users</text>
+  <rect x="1064" y="756" width="510" height="64" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <clipPath id="clip_ga"><rect x="1064" y="756" width="510" height="26" rx="8"/></clipPath>
+  <rect x="1064" y="756" width="510" height="26" fill="#fed7aa" clip-path="url(#clip_ga)"/>
+  <line x1="1064" y1="782" x2="1574" y2="782" stroke="#ea580c" stroke-width="0.8" opacity="0.5"/>
+  <text x="1319" y="775" text-anchor="middle" font-size="12" font-weight="600" fill="#ea580c">Google Analytics</text>
+  <rect x="1072" y="789" width="494" height="24" rx="5" fill="#0891B2"/>
+  <text x="1319" y="805" text-anchor="middle" font-size="11" font-weight="500" fill="#ffffff">events API</text>
+  <path d="M 279 146 L 279 154 L 409 154 L 409 449" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="314" y="146" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="344" y="157" text-anchor="middle" font-size="9" fill="#1d4ed8" font-weight="600">HTTPS</text>
+  <path d="M 799 118 L 799 201 L 409 201 L 409 449" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="574" y="193" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="604" y="204" text-anchor="middle" font-size="9" fill="#7c3aed" font-weight="600">HTTPS</text>
+  <path d="M 409 541 L 409 549 L 799 549 L 799 756" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="574" y="541" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="604" y="552" text-anchor="middle" font-size="9" fill="#0f766e" font-weight="600">reads</text>
+  <path d="M 409 449 L 409 249 L 1189 249 L 1189 449" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="769" y="241" width="60" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="799" y="252" text-anchor="middle" font-size="9" fill="#b45309" font-weight="600">verify</text>
+  <path d="M 279 146 L 279 297 L 6 297 L 6 598 L 279 598 L 279 756" fill="none" stroke="#9f1239" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="98" y="289" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="142" y="300" text-anchor="middle" font-size="9" fill="#9f1239" font-weight="600">static assets</text>
+  <path d="M 279 146 L 279 345 L 1594 345 L 1594 648 L 1319 648 L 1319 756" fill="none" stroke="#0369a1" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="892" y="337" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="936" y="348" text-anchor="middle" font-size="9" fill="#0369a1" font-weight="600">direct beacon</text>
+  <path d="M 799 118 L 799 393 L 12 393 L 12 698 L 279 698 L 279 756" fill="none" stroke="#6d28d9" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="361" y="385" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="405" y="396" text-anchor="middle" font-size="9" fill="#6d28d9" font-weight="600">CDN downloads</text>
+  <path d="M 1319 118 L 1319 441 L 1588 441 L 1588 748 L 1319 748 L 1319 756" fill="none" stroke="#0e7490" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)" opacity="0.85"/>
+  <rect x="1409" y="433" width="88" height="14" rx="3" fill="white" opacity="0.92"/>
+  <text x="1453" y="444" text-anchor="middle" font-size="9" fill="#0e7490" font-weight="600">direct beacon</text>
+  <rect x="20" y="850" width="1560" height="32" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="24" y="858" width="13" height="13" rx="3" fill="#475569"/>
+  <text x="41" y="869" font-size="11" fill="#374151">Existing</text>
+  <rect x="282" y="858" width="13" height="13" rx="3" fill="#0891B2"/>
+  <text x="299" y="869" font-size="11" fill="#374151">New</text>
+  <rect x="540" y="858" width="13" height="13" rx="3" fill="#B45309"/>
+  <text x="557" y="869" font-size="11" fill="#374151">Transitioning</text>
+  <rect x="798" y="858" width="13" height="13" rx="3" fill="#DC2626"/>
+  <text x="815" y="869" font-size="11" fill="#374151">Retiring</text>
+  <rect x="1056" y="858" width="13" height="13" rx="3" fill="#15803D"/>
+  <text x="1073" y="869" font-size="11" fill="#374151">Operational</text>
+  <rect x="1314" y="858" width="13" height="13" rx="3" fill="#94A3B8"/>
+  <text x="1331" y="869" font-size="11" fill="#374151">Read-Only</text>
+</svg>

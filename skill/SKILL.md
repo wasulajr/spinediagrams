@@ -132,15 +132,26 @@ lane must stay within `num_cols`. Row 2 is optional — omit it for a classic
 
 ### Routing rules (important for 3-row diagrams)
 
-Connections route through one of two spines:
+Connections route through one of two spines, or — for skip-row connections —
+through a margin-sidestep channel:
+
 - **Spine 0↔1** (between rows 0 and 1) carries: row 0↔0, row 0↔1, row 1↔1.
 - **Spine 1↔2** (between rows 1 and 2) carries: row 1↔2, row 2↔2.
+- **Margin sidestep** carries: row 0↔2 (skip-row). The line drops to spine
+  0↔1, runs out to the canvas margin, drops through the margin past row 1,
+  re-enters spine 1↔2, and drops to the destination — 6 segments instead of
+  3, but stays out of all container bodies.
 
-**Forbidden:** connections that span row 0 ↔ row 2 directly. They'd have to
-cross row 1 container bodies, which defeats the no-overlap guarantee. The
-engine raises `ValueError` listing the offending edges. Route through a row 1
-container instead (recommended — usually models reality better), or split into
-two diagrams.
+Sidestep side (left vs right) is chosen automatically by the midpoint of the
+source/destination columns: connections living mostly on the left half of
+the canvas route through the left margin, the rest through the right. Each
+sidestep gets its own X channel inside the margin; the margin widens
+automatically to accommodate multiple sidesteps per side.
+
+Use sidestep connections sparingly — they look visually distinct (longer
+paths, longer journey for the eye) which honestly conveys "this skips the
+middle layer." If you have many row 0↔2 connections, consider whether row 1
+should mediate them in reality.
 
 ## Preset lane keys (colours auto-applied)
 

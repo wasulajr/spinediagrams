@@ -10,7 +10,7 @@ Built as a Claude Code [skill](https://docs.claude.com/en/docs/claude-code/skill
 
 - **Deterministic.** Same config → same SVG. No LLM in the render loop.
 - **Single-spine routing.** All arrows route through one shared zone between adjacent rows. No arrows over containers; no labels piled on each other.
-- **2 or 3 rows.** Default 2-row layout for source/target diagrams; opt into 3 rows (`"row": 2`) for classic 3-tier (frontend / backend / data + externals) with two spine zones.
+- **2 or 3 rows + skip-row sidestep.** Default 2-row layout for source/target diagrams; opt into 3 rows (`"row": 2`) for classic 3-tier. Skip-row connections (row 0 ↔ row 2) automatically route around through a margin sidestep channel, so they never overlap the middle row.
 - **Aspect-ratio aware.** Defaults to 16:9 (slide-friendly), also accepts 4:3 or a numeric ratio. Extra vertical room is spent on arrow spacing — the more connections you have, the more breathing room each label gets.
 - **Zero deps.** Pure Python stdlib. No matplotlib, no graphviz, no node toolchain.
 - **Preset vendor palettes.** `sf`, `gcp`, `aws`, `azure`, `stripe`, `postgres`, `kafka`, `okta`, `slack`, and more come with colors built in.
@@ -95,6 +95,15 @@ open examples/3-tier-web-app.svg
 
 ![3-tier web app](examples/3-tier-web-app.svg)
 
+[`examples/3-tier-with-sidestep.py`](examples/3-tier-with-sidestep.py) — same 3-row layout but with four row 0 ↔ row 2 sidestep connections (direct browser → CDN and browser → analytics paths that bypass the backend). Demonstrates the margin-sidestep router.
+
+```bash
+python examples/3-tier-with-sidestep.py
+open examples/3-tier-with-sidestep.svg
+```
+
+![3-tier with sidestep](examples/3-tier-with-sidestep.svg)
+
 ## Status colors
 
 | Status | Color | Meaning |
@@ -111,8 +120,7 @@ open examples/3-tier-web-app.svg
 PRs welcome. The whole renderer is one file ([`skill/scripts/svg_engine.py`](skill/scripts/svg_engine.py)) — small, focused, no abstraction layers. Ideas:
 
 - Smart label staggering to avoid label-on-vertical-drop occlusion
-- More than 3 rows (generalize the 0↔1 + 1↔2 spine model to N rows)
-- Margin-sidestep routing so row 0 ↔ row 2 connections can be drawn without crossing middle-row containers
+- More than 3 rows (generalize the spine + sidestep model to N rows)
 - Additional vendor presets
 - Pyproject + PyPI package
 
