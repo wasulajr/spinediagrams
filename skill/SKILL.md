@@ -3,7 +3,7 @@ name: spinediagrams
 description: >
   Generate clean architecture and system-design diagrams as SVG files.
   Use this skill whenever the user wants to visualise how services, systems,
-  or components connect — migration diagrams, current-state vs target-state
+  or components connect: migration diagrams, current-state vs target-state
   architectures, integration maps, data-flow diagrams, platform overviews,
   or any diagram that shows technology boxes with arrows between them.
   Triggers on phrases like: "draw a diagram", "make an architecture diagram",
@@ -17,17 +17,13 @@ description: >
 
 Produces fixed-width (1600 px) SVG architecture diagrams with:
 - A title / subtitle header band at the top
-- A **6-column grid** with **up to 3 rows** of technology containers (each
-  container holds colour-coded component nodes)
-- **Orthogonal single-spine edge routing** — all connection lines travel
-  through the spine zone(s) between adjacent rows so they never pass
-  through container bodies
+- A **6-column grid** with **up to 3 rows** of technology containers (each container holds colour-coded component nodes)
+- **Orthogonal single-spine edge routing**. All connection lines travel through the spine zone(s) between adjacent rows so they never pass through container bodies.
 - A status-colour legend at the bottom
 
 ## Workflow
 
-1. **Understand the diagram** — identify the technology containers (lanes),
-   the components inside each, and the connections between them.
+1. **Understand the diagram.** Identify the technology containers (lanes), the components inside each, and the connections between them.
 2. **Build the config dict** (see format below).
 3. **Run the engine** and save the SVG.
 4. **Present the file** to the user.
@@ -41,7 +37,7 @@ Produces fixed-width (1600 px) SVG architecture diagrams with:
 Import or call it directly:
 
 ```python
-# Option A — import
+# Option A: import
 import sys
 sys.path.insert(0, "<skill_dir>/scripts")
 from svg_engine import Diagram
@@ -51,7 +47,7 @@ svg = d.render()
 with open("output.svg", "w") as f:
     f.write(svg)
 
-# Option B — CLI (config must be written to a JSON file first)
+# Option B: CLI (config must be written to a JSON file first)
 # python <skill_dir>/scripts/svg_engine.py config.json output.svg
 ```
 
@@ -59,7 +55,7 @@ with open("output.svg", "w") as f:
 
 ```python
 config = {
-    "title": "Main Title — Optional subtitle",   # "—" splits title/subtitle
+    "title": "Main Title — Optional subtitle",   # " — " (em dash) splits title from subtitle
     "num_cols": 6,    # optional, default 6; increase for more lanes per row
     "aspect": "16:9", # optional, default "16:9". Also accepts "4:3" or a
                       # numeric width/height ratio. Canvas pads to this
@@ -71,7 +67,7 @@ config = {
     # For well-known vendors, just use the preset key (no colours needed).
     # For custom lanes, supply bg / border / header_bg.
     "lanes": {
-        "sf": {                      # preset key → colours auto-filled
+        "sf": {                      # preset key -> colours auto-filled
             "label": "Salesforce",
             "col": 0, "colspan": 2, "row": 0
         },
@@ -79,7 +75,7 @@ config = {
             "label": "GCP Platform",
             "col": 0, "colspan": 2, "row": 1
         },
-        "custom": {                  # custom lane → supply colours
+        "custom": {                  # custom lane -> supply colours
             "label": "My Service",
             "col": 2, "colspan": 1, "row": 0,
             "bg": "#f0fdf4", "border": "#16a34a", "header_bg": "#bbf7d0"
@@ -106,23 +102,22 @@ config = {
 }
 ```
 
+The em dash inside the `title` string is API syntax, not prose. The engine literally splits the title field on ` — ` to separate title from subtitle.
+
 ## Grid layout rules
 
 The diagram has up to **3 rows** and up to `num_cols` columns (default 6).
 
-Assign each lane a `col` (0-based), `colspan`, and `row` (`0` = top, `1` = middle,
-`2` = bottom). Lane widths in a row must not overlap: `col + colspan` for each
-lane must stay within `num_cols`. Row 2 is optional — omit it for a classic
-2-row diagram.
+Assign each lane a `col` (0-based), `colspan`, and `row` (`0` = top, `1` = middle, `2` = bottom). Lane widths in a row must not overlap: `col + colspan` for each lane must stay within `num_cols`. Row 2 is optional; omit it for a classic 2-row diagram.
 
 **Suggested 2-row layout:**
 
 | Row | Col 0-1 (span 2) | Col 2 | Col 3 | Col 4 | Col 5 |
 |-----|-----------------|-------|-------|-------|-------|
-| 0   | Large source (e.g. SF) | Mid-tier A | Mid-tier B | Mid-tier C | — |
+| 0   | Large source (e.g. SF) | Mid-tier A | Mid-tier B | Mid-tier C | (empty) |
 | 1   | Large target (e.g. GCP) | Ext A | Ext B | Ext C | Ext D |
 
-**3-row layout — classic 3-tier (frontend / backend / data + externals):**
+**3-row layout (classic 3-tier: frontend / backend / data + externals):**
 
 | Row | Use it for |
 |-----|------------|
@@ -132,26 +127,15 @@ lane must stay within `num_cols`. Row 2 is optional — omit it for a classic
 
 ### Routing rules (important for 3-row diagrams)
 
-Connections route through one of two spines, or — for skip-row connections —
-through a margin-sidestep channel:
+Connections route through one of two spines, or, for skip-row connections, through a margin-sidestep channel:
 
 - **Spine 0↔1** (between rows 0 and 1) carries: row 0↔0, row 0↔1, row 1↔1.
 - **Spine 1↔2** (between rows 1 and 2) carries: row 1↔2, row 2↔2.
-- **Margin sidestep** carries: row 0↔2 (skip-row). The line drops to spine
-  0↔1, runs out to the canvas margin, drops through the margin past row 1,
-  re-enters spine 1↔2, and drops to the destination — 6 segments instead of
-  3, but stays out of all container bodies.
+- **Margin sidestep** carries: row 0↔2 (skip-row). The line drops to spine 0↔1, runs out to the canvas margin, drops through the margin past row 1, re-enters spine 1↔2, and drops to the destination. Six segments instead of three, but stays out of all container bodies.
 
-Sidestep side (left vs right) is chosen automatically by the midpoint of the
-source/destination columns: connections living mostly on the left half of
-the canvas route through the left margin, the rest through the right. Each
-sidestep gets its own X channel inside the margin; the margin widens
-automatically to accommodate multiple sidesteps per side.
+Sidestep side (left vs right) is chosen automatically by the midpoint of the source/destination columns: connections living mostly on the left half of the canvas route through the left margin, the rest through the right. Each sidestep gets its own X channel inside the margin; the margin widens automatically to accommodate multiple sidesteps per side.
 
-Use sidestep connections sparingly — they look visually distinct (longer
-paths, longer journey for the eye) which honestly conveys "this skips the
-middle layer." If you have many row 0↔2 connections, consider whether row 1
-should mediate them in reality.
+Use sidestep connections sparingly. They look visually distinct (longer paths, longer journey for the eye) which honestly conveys "this skips the middle layer." If you have many row 0↔2 connections, consider whether row 1 should mediate them in reality.
 
 ## Preset lane keys (colours auto-applied)
 
@@ -192,11 +176,8 @@ For any key not in this list, supply explicit `bg` / `border` / `header_bg`.
 
 ## Tips
 
-- Keep edge labels short (3-5 words) — they render at 9 px inside a white pill.
+- Keep edge labels short (3-5 words). They render at 9 px inside a white pill.
 - Connections with no meaningful label can pass an empty string `""`.
-- If you need more than 6 columns, set `"num_cols": 8` (or higher) — column
-  widths shrink proportionally.
-- The engine handles the routing automatically; you only need to specify
-  which node connects to which.
-- Save the final SVG to the user's workspace folder, then present it with
-  `mcp__cowork__present_files` (Cowork) or tell the user the file path (Claude Code).
+- If you need more than 6 columns, set `"num_cols": 8` (or higher); column widths shrink proportionally.
+- The engine handles the routing automatically; you only need to specify which node connects to which.
+- Save the final SVG to the user's workspace folder, then present it with `mcp__cowork__present_files` (Cowork) or tell the user the file path (Claude Code).
