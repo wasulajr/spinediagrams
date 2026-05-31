@@ -33,8 +33,10 @@ Pass show_icons=false in config to disable. Add an explicit 5th node element
 Status values: existing | new | transitioning | retiring | operational | readonly
 """
 
-import sys, json, re, os
+import sys, json, re, os, urllib.request, urllib.error
 from collections import defaultdict
+
+ICON_CACHE_DIR = os.path.expanduser("~/.cache/spinediagrams")
 
 CW   = 1600
 FONT = "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
@@ -200,6 +202,188 @@ def _detect_icon(label):
     return None
 
 
+# ── Dynamic icon retrieval (Simple Icons CDN) ─────────────────────────────────
+
+# Maps common shorthand names to canonical Simple Icons slugs.
+SIMPLEICONS_ALIASES = {
+    # GCP (Simple Icons includes GCP services; AWS/Azure service icons were removed)
+    "gcp": "googlecloud", "google cloud": "googlecloud",
+    "bigquery": "googlebigquery", "pubsub": "googlepubsub",
+    # Databases
+    "postgres": "postgresql", "mongo": "mongodb",
+    "kafka": "apachekafka", "cassandra": "apachecassandra",
+    "elastic": "elasticsearch",
+    # Languages / runtimes
+    # Simple Icons slugs "." as "dot": "Node.js"→"nodedotjs", "Vue.js"→"vuedotjs"
+    # Labels ending in ".js" are handled automatically by _simpleicon_slug.
+    # Aliases here cover shorthand forms that wouldn't derive correctly otherwise.
+    "node": "nodedotjs", "nodejs": "nodedotjs",
+    "golang": "go",
+    "kotlin": "kotlin", "swift": "swift",
+    "ruby": "ruby", "php": "php", "deno": "deno",
+    # Frameworks — "Vue.js" / "Next.js" / "React" derive correctly via dot-rule
+    "vue": "vuedotjs",
+    "next": "nextdotjs", "nextjs": "nextdotjs",
+    "angular": "angular",
+    "django": "django", "flask": "flask", "fastapi": "fastapi",
+    "rails": "rubyonrails", "laravel": "laravel",
+    # DevOps / infra
+    "docker": "docker", "kubernetes": "kubernetes", "k8s": "kubernetes",
+    "terraform": "terraform", "ansible": "ansible",
+    "github": "github", "gitlab": "gitlab",
+    "jenkins": "jenkins", "circleci": "circleci",
+    "nginx": "nginx", "grafana": "grafana", "prometheus": "prometheus",
+    "datadog": "datadog", "sentry": "sentry", "kibana": "kibana",
+    "cloudflare": "cloudflare",
+    # SaaS / platforms
+    "okta": "okta", "auth0": "auth0",
+    "hubspot": "hubspot", "notion": "notion", "figma": "figma",
+    "jira": "jira", "confluence": "confluence",
+    "vercel": "vercel", "netlify": "netlify",
+    # AI / ML
+    "huggingface": "huggingface",
+    # Messaging / queues
+    "rabbitmq": "rabbitmq", "celery": "celery",
+    # Other
+    "graphql": "graphql", "airflow": "apacheairflow",
+}
+
+
+def _simpleicon_slug(label):
+    """Normalize a label to a Simple Icons slug, consulting the alias table first.
+
+    Simple Icons derives slugs by replacing "." with "dot" before stripping
+    non-alphanumeric characters (e.g. "Node.js" -> "nodedotjs"). We replicate
+    that rule so labels like "Vue.js" or "Next.js" resolve correctly without
+    needing explicit alias entries.
+    """
+    key = label.lower().strip()
+    if key in SIMPLEICONS_ALIASES:
+        return SIMPLEICONS_ALIASES[key]
+    slug = re.sub(r"[^a-z0-9]", "", key.replace(".", "dot"))
+    return slug if len(slug) >= 2 else None
+
+
+_SIICONS_INDEX = {}  # slug -> {name, hex} — populated lazily from Simple Icons data file
+
+
+def _load_siicons_index():
+    """Load the Simple Icons name+color index into _SIICONS_INDEX (once per process).
+
+    The index is cached to disk at ICON_CACHE_DIR/_index.json so the ~450 KB data
+    file is only downloaded once per machine. Colors live in the data file; SVG paths
+    live in per-icon SVG files — two separate fetches per new icon, but each cached
+    permanently thereafter.
+    """
+    if _SIICONS_INDEX:
+        return
+    cache_path = os.path.join(ICON_CACHE_DIR, "_index.json")
+    os.makedirs(ICON_CACHE_DIR, exist_ok=True)
+    if os.path.exists(cache_path):
+        try:
+            _SIICONS_INDEX.update(json.load(open(cache_path)))
+            return
+        except Exception:
+            pass
+    url = "https://raw.githubusercontent.com/simple-icons/simple-icons/HEAD/data/simple-icons.json"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "spinediagrams/0.4"})
+        with urllib.request.urlopen(req, timeout=12) as r:
+            icons = json.load(r)
+        idx = {}
+        for icon in icons:
+            title    = icon["title"]
+            explicit = icon.get("slug", "")
+            # Replicate Simple Icons slug rule: "." -> "dot", strip non-alnum
+            derived  = re.sub(r"[^a-z0-9]", "", title.lower().replace(".", "dot"))
+            slug     = explicit or derived
+            entry    = {"name": title, "hex": f"#{icon.get('hex', '555555')}"}
+            idx[slug] = entry
+            if explicit and derived != slug:
+                idx[derived] = entry   # also index by the derived form
+        _SIICONS_INDEX.update(idx)
+        try:
+            json.dump(idx, open(cache_path, "w"))
+        except Exception:
+            pass
+    except Exception:
+        pass  # index unavailable — icons fall back to fill #555555
+
+
+def _fetch_simpleicon(slug):
+    """Fetch icon data for a Simple Icons slug. Returns dict or None.
+
+    Strategy:
+      1. Check per-icon disk cache (permanent; also caches confirmed 404s).
+      2. Load color index (downloaded once, cached permanently).
+      3. Fetch SVG path from raw GitHub icons directory.
+      4. Combine path + color, cache, return.
+
+    Transient network errors are not cached so they retry on the next run.
+    """
+    os.makedirs(ICON_CACHE_DIR, exist_ok=True)
+    cache_path = os.path.join(ICON_CACHE_DIR, f"{slug}.json")
+
+    if os.path.exists(cache_path):
+        try:
+            cached = json.load(open(cache_path))
+            return None if cached.get("not_found") else cached
+        except Exception:
+            pass
+
+    _load_siicons_index()
+    meta = _SIICONS_INDEX.get(slug, {})
+
+    svg_url = f"https://raw.githubusercontent.com/simple-icons/simple-icons/HEAD/icons/{slug}.svg"
+    try:
+        req = urllib.request.Request(svg_url, headers={"User-Agent": "spinediagrams/0.4"})
+        with urllib.request.urlopen(req, timeout=6) as r:
+            svg = r.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            try:
+                json.dump({"not_found": True}, open(cache_path, "w"))
+            except Exception:
+                pass
+        return None
+    except Exception:
+        return None  # transient error — don't cache
+
+    path_m  = re.search(r'd="([^"]+)"', svg)
+    title_m = re.search(r'<title>([^<]+)</title>', svg)
+    if not path_m:
+        return None
+
+    data = {
+        "name": meta.get("name") or (title_m.group(1) if title_m else slug.title()),
+        "path": path_m.group(1),
+        "fill": meta.get("hex", "#555555"),
+    }
+    try:
+        json.dump(data, open(cache_path, "w"))
+    except Exception:
+        pass
+    return data
+
+
+def _fetch_dynamic_icon(label):
+    """Attempt to resolve an unrecognized label to a Simple Icons icon.
+
+    On success, mutates TECH_ICONS so the rest of the rendering pipeline
+    works unchanged. Returns the icon key or None.
+    """
+    slug = _simpleicon_slug(label)
+    if not slug:
+        return None
+    if slug in TECH_ICONS:
+        return slug
+    data = _fetch_simpleicon(slug)
+    if data:
+        TECH_ICONS[slug] = data
+        return slug
+    return None
+
+
 # ── Predefined lane colour palettes ──────────────────────────────────────────
 LANE_PRESETS = {
     "sf"      : ("#eef2ff", "#6366f1", "#c7d2fe"),
@@ -287,7 +471,7 @@ def _parse_aspect(val):
     return 16 / 9
 
 
-def _parse_node(n, show_icons):
+def _parse_node(n, show_icons, fetch_icons=True):
     label   = n[0]
     status  = n[1]
     cat     = n[2] if len(n) > 2 and n[2] is not None else None
@@ -296,6 +480,8 @@ def _parse_node(n, show_icons):
         icon = n[4]   # explicit override (None = suppress icon for this node)
     elif show_icons:
         icon = _detect_icon(label)
+        if icon is None and fetch_icons:
+            icon = _fetch_dynamic_icon(label)
     else:
         icon = None
     return {"label": label, "status": status, "category": cat,
@@ -410,8 +596,9 @@ class Diagram:
         self.edge_dashed     = config.get("edge_dashed", True)
         self.categories      = config.get("categories", {})
         self.default_cat_mark= config.get("category_mark", "dot")
-        # Node descriptions for hover tooltips. Keys match node labels exactly.
         self.descriptions    = config.get("descriptions", {})
+        # fetch_icons: false disables dynamic Simple Icons retrieval (offline / fast mode)
+        self.fetch_icons     = config.get("fetch_icons", True)
 
         # Determine if any node has a detectable icon so we can size headers.
         _has_icon = False
@@ -512,7 +699,7 @@ class Diagram:
             bg        = lane.get("bg",        preset[0])
             border    = lane.get("border",    preset[1])
             header_bg = lane.get("header_bg", preset[2])
-            parsed_nodes = [_parse_node(n, self.show_icons) for n in nodes]
+            parsed_nodes = [_parse_node(n, self.show_icons, self.fetch_icons) for n in nodes]
 
             # Smart header icon layout: calculate how many icons fit inline vs. overflow
             seen_ik, lane_icons = set(), []
